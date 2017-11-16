@@ -263,10 +263,16 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
   /// Removes the LRU position, shifting the linked list if necessary.
   void _removeLru() {
     // Remove the tail from the internal map.
-    _entries.remove(_tail.key);
+    _LinkedEntry lru = _tail;
+    _entries.remove(lru.key);
+
+    assert(lru.next == null);
 
     // Remove the tail element itself.
-    _tail = _tail.previous;
+    _tail = lru.previous;
     _tail.next = null;
+
+    // Remove the reference to the new tail in the element we are removing.
+    lru.previous = null;
   }
 }
