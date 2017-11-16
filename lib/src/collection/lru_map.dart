@@ -225,7 +225,6 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
     print("_promoteEntry: ${entry.key} prev=${entry.previous?.key} next=${entry.next?.key}");
     // If this entry is already in the MRU position we are done.
     if (entry == _head) {
-      print("Early exit");
       return;
     }
 
@@ -237,6 +236,10 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
       if (_tail == entry) {
         _tail = entry.previous;
       }
+    }
+    // If this entry is not the end of the list then link the next entry to the previous entry.
+    if (entry.next != null) {
+      entry.next.previous = entry.previous;
     }
 
     // Replace head with this element.
