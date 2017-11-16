@@ -152,12 +152,19 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
   /// LRU position is removed.
   @override
   V putIfAbsent(K key, V ifAbsent()) {
+    print("putIfAbsent: $key");
     final entry =
         _entries.putIfAbsent(key, () => _createEntry(key, ifAbsent()));
     if (length > maximumSize) {
       _removeLru();
     }
     _promoteEntry(entry);
+
+    if (_entries.length != _iterable().length) {
+      print("entries=${_entries.length}");
+      print("iterable=${_iterable().length}");
+      throw new Exception("Bad lengths");
+    }
     return entry.value;
   }
 
@@ -243,6 +250,13 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
       assert(length == 1);
       _tail = _head;
     }
+
+    if (_entries.length != _iterable().length) {
+
+      print("entries=${_entries.length}");
+      print("iterable=${_iterable().length}");
+      throw new Exception("Bad lengths");
+    }
   }
 
   /// Creates and returns an entry from [key] and [value].
@@ -264,9 +278,14 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
   void _removeLru() {
     // Remove the tail from the internal map.
     _LinkedEntry lru = _tail;
-    _entries.remove(lru.key);
+    print("_removeLru: ${lru.key}");
+    print(_entries);
+    for (K key in keys) { print ("Key $key ->"); }
 
+
+    assert(_entries.remove(lru.key) != null);
     assert(lru.next == null);
+
 
     // Remove the tail element itself.
     _tail = lru.previous;

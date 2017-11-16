@@ -14,6 +14,8 @@
 
 library quiver.collection.lru_map_test;
 
+import 'dart:math';
+
 import 'package:quiver/collection.dart';
 import 'package:test/test.dart';
 
@@ -198,6 +200,76 @@ void main() {
       });
     });
 
+    test ('ADAM', () {
+      Random r = new Random();
+      while (true) {
+        int size = r.nextInt(3) + 1;
+        List<int> command = new Iterable.generate(100, (_) => r.nextInt(2)).toList();
+        List<int> key = new Iterable.generate(100, (_) => r.nextInt(3)).toList();
+        LruMap<int, int> lruMap = new LruMap(maximumSize: size);
+
+        print(command);
+        print(key);
+        print(size);
+        for (int i = 0; i < command.length; i += 1) {
+          int k = key[i];
+          if (command[i] == 0) {
+            lruMap[k] = 2;
+          } else {
+            var v = lruMap[k];
+          }
+        }
+      }
+    });
+
+    test ('ADA2', () {
+      Random r = new Random();
+      while (true) {
+        int size = 3;
+        List<int> command = [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1];
+        List<int> key = [1, 1, 1, 2, 2, 0, 2, 0, 0, 2, 0, 2, 0, 2, 0, 1, 1, 1, 1, 1, 2, 0, 1, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 1, 0, 2, 2, 2, 1, 2, 0, 1, 1, 2, 0, 1, 2, 0, 2, 0, 0, 2, 0, 1, 1, 0, 1, 0, 2, 1, 2, 2, 1, 0, 0, 1, 2, 0, 0, 0, 2, 0, 2, 2, 0, 0, 2, 2, 1, 1, 0, 1, 0, 2, 1, 1, 2, 1, 2, 2, 1, 1, 2, 2, 1, 1];
+        LruMap<int, int> lruMap = new LruMap(maximumSize: size);
+
+//        print(command);
+//        print(key);
+//        print(size);
+        for (int i = 10; i < 25; i += 1) {
+//          print(i);
+          int k = key[i];
+          if (command[i] == 0) {
+            print("lruMap[$k] = 2;");
+            lruMap[k] = 2;
+          } else {
+            print("v = lruMap[$k];");
+            var v = lruMap[k];
+          }
+          assert(lruMap.length == lruMap.keys.length);
+        }
+      }
+    });
+
+    test ('ADA3', () {
+      LruMap<int, int> lruMap = new LruMap(maximumSize: 3);
+      var v = lruMap[0];
+      lruMap[2] = 2;
+      lruMap[0] = 2;
+      lruMap[2] = 2;
+      v = lruMap[0];
+      v = lruMap[1];
+      v = lruMap[1];
+      lruMap[1] = 2;
+      v = lruMap[1];
+      v = lruMap[1];
+      v = lruMap[2];
+      v = lruMap[0];
+      v = lruMap[1];
+      lruMap[0] = 2;
+      v = lruMap[2];
+      assert(lruMap.length == lruMap.keys.length);
+    });
+
+
+
     group('`putIfAbsent`', () {
       setUp(() {
         lruMap = new LruMap()
@@ -219,6 +291,24 @@ void main() {
         expect(lruMap.putIfAbsent('D', () => 'Delta'), 'Delta');
         expect(lruMap.keys.toList(), ['D', 'C', 'B']);
       });
+
+      test('1 the LRU item if `maximumSize` exceeded', () {
+        lruMap.maximumSize = 3;
+        expect(lruMap.putIfAbsent('C', () => 'Charlie'), 'Charlie');
+        expect(lruMap.keys.toList(), ['C', 'B', 'A']);
+      });
+
+
+      test('1 the LRU item if `maximumSize` exceeded', () {
+        lruMap.maximumSize = 3;
+        var v = lruMap['B'];
+        v = lruMap['C'];
+        v = lruMap['A'];
+        expect(lruMap.putIfAbsent('A', () => 'Alpha'), 'Alpha');
+        expect(lruMap.keys.toList(), ['A', 'C', 'B']);
+      });
+
+
     });
   });
 }
