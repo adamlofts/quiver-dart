@@ -250,24 +250,27 @@ void main() {
 
     test ('ADA3', () {
       LruMap<int, int> lruMap = new LruMap(maximumSize: 3);
-      var v = lruMap[0];
-      lruMap[2] = 2;
-      lruMap[0] = 2;
-      lruMap[2] = 2;
-      v = lruMap[0];
-      v = lruMap[1];
-      v = lruMap[1];
-      lruMap[1] = 2;
-      v = lruMap[1];
-      v = lruMap[1];
-      v = lruMap[2];
-      v = lruMap[0];
-      v = lruMap[1];
-      lruMap[0] = 2;
+      lruMap[2] = 1;
+      lruMap[0] = 1;
+      lruMap[1] = 1;
+      var v = lruMap[1];
+      lruMap[0] = 1;
       v = lruMap[2];
       assert(lruMap.length == lruMap.keys.length);
     });
 
+
+    test ('ADA4', () {
+      LruMap<String, int> lruMap = new LruMap(maximumSize: 3)
+        ..addAll({ 'C': 1, 'A': 1, 'B': 1 });
+      print(lruMap.keys);
+      lruMap['A'] = 1;
+      print(lruMap.keys);
+      var v = lruMap['C'];
+      print(lruMap.keys);
+      print(lruMap.length);
+      assert(lruMap.length == lruMap.keys.length);
+    });
 
 
     group('`putIfAbsent`', () {

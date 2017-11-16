@@ -222,8 +222,10 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
 
   /// Moves [entry] to the MRU position, shifting the linked list if necessary.
   void _promoteEntry(_LinkedEntry<K, V> entry) {
+    print("_promoteEntry: ${entry.key} prev=${entry.previous?.key} next=${entry.next?.key}");
     // If this entry is already in the MRU position we are done.
     if (entry == _head) {
+      print("Early exit");
       return;
     }
 
@@ -249,13 +251,6 @@ class LinkedLruHashMap<K, V> implements LruMap<K, V> {
     if (_tail == null) {
       assert(length == 1);
       _tail = _head;
-    }
-
-    if (_entries.length != _iterable().length) {
-
-      print("entries=${_entries.length}");
-      print("iterable=${_iterable().length}");
-      throw new Exception("Bad lengths");
     }
   }
 
